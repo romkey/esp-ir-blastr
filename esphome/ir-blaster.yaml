@@ -1,0 +1,111 @@
+esp32:
+  board: seeed_xiao_esp32s3
+  flash_size: 8MB
+  framework:
+    type: arduino
+    version: "latest"
+    platform_version: "6.7.0"
+
+psram:
+  mode: octal
+  speed: 80MHz    
+
+logger:
+
+api:
+
+ota:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Ir-Blaster Fallback Hotspot"
+
+captive_portal:
+    
+packages:
+  remote_package_files:
+    url: https://github.com/romkey/esphome-lib
+    files: [lib/wifi-diagnostics.yml, lib/esp32.yml]
+    refresh: 0s
+
+remote_receiver:
+  pin: GPIO9
+  dump: pronto
+  rmt_channel: 4
+#  invert: True
+
+remote_transmitter:
+  pin: GPIO7
+  rmt_channel: 1
+  # Infrared remotes use a 50% carrier signal
+  carrier_duty_percent: 50%
+
+button:
+  - platform: restart
+    name: "Restart"
+  - platform: template
+    name: "Toggle Fan"
+    on_press:
+      remote_transmitter.transmit_pronto:
+        data: '0000 006D 0022 0000 0160 00A8 001B 0012 001A 0012 001A 0012 001A 0012 001A 0012 001A 0012 001A 0012 001A 0012 001A 003C 001B 003C 001B 003C 001B 003C 001B 003C 001B 003C 001B 003C 001B 003C 001B 003C 001B 003C 001B 0012 001A 0012 001A 0012 001A 0012 001A 0012 001A 0012 001A 0012 001A 0011 001A 003C 001B 003C 001B 003C 001B 003C 001B 003C 001B 003C 001B 0181'
+  - platform: template
+    name: "Toggle Light"
+    on_press:
+      remote_transmitter.transmit_pronto:
+        data: '0000 006D 0022 0000 015C 00AC 0017 0015 0016 0015 0016 0015 0016 0015 0016 0015 0016 0015 0016 0015 0016 0015 0016 003F 0017 003F 0017 003F 0017 003F 0019 003D 0019 003D 0019 003D 0019 003D 001A 003D 0019 003D 0019 0013 0018 0013 0019 0012 0019 0012 0019 003D 0019 0012 0019 0012 0019 0012 0019 003D 0019 003D 0019 003E 0019 003E 0018 0013 0018 003F 0018 0181'
+  - platform: template
+    name: "Fan Faster"
+    on_press:
+      remote_transmitter.transmit_pronto:
+        data: '0000 006D 0022 0000 015F 00A9 001A 0011 001A 0011 001A 0011 001A 0011 001A 0011 001A 0011 001A 0011 001A 0011 001A 003C 001A 003C 001A 003C 001A 003C 001A 003C 001A 003C 001A 003C 001A 003D 001A 0011 001A 0011 001A 0011 001A 0011 001A 003C 001A 0011 001A 003C 001A 0011 001A 003C 001A 003C 001A 003C 001A 003C 001A 0011 001A 003C 001A 0011 001A 003C 001A 0181'
+  - platform: template
+    name: "Fan Slower"
+    on_press:
+      remote_transmitter.transmit_pronto:
+        data: '0000 006D 0023 0000 015D 00AB 0019 0012 0018 0013 0019 0012 0018 0013 0018 0013 0019 0012 0018 0013 0018 0013 0018 003E 0019 003E 0018 003E 0019 003D 0018 003E 0019 003D 0019 003D 0019 003E 0019 003D 0019 0012 0019 0012 0019 0012 0019 0012 0018 0013 0019 003E 0019 0013 0019 0011 001A 003D 0019 003D 0019 003D 0019 003D 0019 003D 001A 0012 0019'
+  - platform: template
+    name: "Light Brighter"
+    on_press:
+      remote_transmitter.transmit_pronto:
+        data: '0000 006D 0022 0000 015E 00AA 0018 0013 0018 0013 0018 0012 0019 0013 0018 0012 0019 0013 0018 0013 0018 0013 0018 003E 0018 003E 0018 003D 0019 003D 0019 003E 0018 003E 0019 003E 0018 003F 0018 0013 0019 003C 001A 0012 0019 0012 0019 0012 0019 0011 001A 003D 0019 0012 0019 003D 0019 0012 0019 003D 0019 003D 0019 003D'
+  - platform: template
+    name: "Light Dimmer"
+    on_press:
+      remote_transmitter.transmit_pronto:
+        data: '0000 006D 0022 0000 015E 00AA 0018 0013 0018 0013 0018 0013 0018 0013 0018 0013 0018 0013 0018 0013 0018 0013 0017 003F 0017 003F 0017 003F 0017 003F 0017 003F 0017 003F 0017 003F 0017 003F 0018 003F 0017 0014 0017 0014 0017 0014 0017 003F 0017 0014 0017 0039 001D 0014 0017 0014 0017 003F 0017 003F 0018 003F 0017 003D'
+
+
+
+esp32_touch:
+  setup_mode: False
+
+binary_sensor:
+  - platform: esp32_touch
+    name: "Touch 0"
+    pin: GPIO3
+    id: touch0
+    threshold: 1000
+  - platform: esp32_touch
+    name: "Touch 1"
+    pin: GPIO4
+    id: touch1
+    threshold: 1000
+  - platform: esp32_touch
+    name: "Touch 2"
+    pin: GPIO5
+    id: touch2
+    threshold: 1000
+  - platform: esp32_touch
+    name: "Touch 3"
+    pin: GPIO6
+    id: touch3
+    threshold: 1000
+  - platform: esp32_touch
+    name: "Touch 4"
+    id: touch4
+    pin: GPIO9
+    threshold: 1000
