@@ -1,0 +1,106 @@
+logger:
+  level: DEBUG
+
+globals:
+  - id: fan_state
+    type: bool
+    restore_value: True
+    initial_value: 'false'
+  - id: light_state
+    type: bool
+    restore_value: True
+    initial_value: 'false'
+
+homekit_base:
+  meta:
+    name: ${name}
+    manufacturer: ${manufacturer}
+    model: ${model}
+    serial_number: ${serial_number}
+    fw_rev: ${fw_rev}
+  setup_code: ${setup_code}
+  setup_id: ${setup_id}
+
+fan:
+  - platform: template
+    name: ${fan_name}
+    id: ir_fan
+    restore_mode: RESTORE_DEFAULT_OFF
+
+    on_turn_on:
+      - lambda: |-
+          ESP_LOGD("on_turn_on", "fan_state %d", id(fan_state));
+
+          if(id(fan_state))
+            return;
+
+          ESP_LOGD("on_turn_on", "toggling fan state");
+          id(toggle_fan).press();
+          id(fan_state) = true;
+
+    on_turn_off:
+      - lambda: |-
+          ESP_LOGD("on_turn_on", "fan_state %d", id(fan_state));
+
+          if(!id(fan_state))
+            return;
+
+          ESP_LOGD("on_turn_off", "toggling fan state");
+          id(toggle_fan).press();
+          id(fan_state) = false;
+
+
+light:
+  - platform: binary
+    name: ${light_name}
+    id: ir_light
+    output: light_output
+
+output:
+  - platform: template
+    id: light_output
+    type: binary
+    on_turn_on:
+      - lambda: |-
+          ESP_LOGD("on_turn_on", "light_state %d", id(light_state));
+
+          if(id(light_state))
+            return;
+
+          ESP_LOGD("on_turn_on", "toggling light state");
+          id(toggle_light).press();
+          id(light_state) = true;
+
+    on_turn_off:
+      - lambda: |-
+          ESP_LOGD("on_turn_on", "light_state %d", id(light_state));
+
+          if(!id(light_state))
+            return;
+
+          ESP_LOGD("on_turn_off", "toggling light state");
+          id(toggle_light).press();
+          id(light_state) = false;
+
+homekit:
+  fan:
+    - id: ir_fan
+      meta:
+        name: ${fan_name}
+        manufacturer: ${fan_manufacturer}
+        model: ${fan_model}
+        serial_number: ${fan_serial_number}
+        fw_rev: ${fan_fw_rev}
+  light:
+    - id: ir_light
+      meta:
+        name: ${light_name}
+        manufacturer: ${light_manufacturer}
+        model: ${light_model}
+        serial_number: ${light_serial_number}
+        fw_rev: ${light_fw_rev}
+
+button:
+- platform: homekit_base
+  factory_reset:
+    name: "Reset HomeKit pairings"
