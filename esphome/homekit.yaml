@@ -55,10 +55,6 @@ light:
     name: ${light_name}
     id: ir_light
     output: light_output
-
-output:
-  - platform: binary
-    id: light_output
     on_turn_on:
       - lambda: |-
           ESP_LOGD("on_turn_on", "light_state %d", id(light_state));
@@ -80,6 +76,12 @@ output:
           ESP_LOGD("on_turn_off", "toggling light state");
           id(toggle_light).press();
           id(light_state) = false;
+
+output:
+  - platform: template
+    id: light_output
+    type: binary
+    write_action:
 
 homekit:
   fan:
