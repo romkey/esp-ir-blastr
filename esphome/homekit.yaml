@@ -57,9 +57,8 @@ light:
     output: light_output
 
 output:
-  - platform: template
+  - platform: binary
     id: light_output
-    type: binary
     on_turn_on:
       - lambda: |-
           ESP_LOGD("on_turn_on", "light_state %d", id(light_state));
