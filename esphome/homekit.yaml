@@ -82,7 +82,7 @@ output:
     id: light_output
     type: binary
     write_action:
-      - lambda: return id(light_state);
+      - lambda: return;
 
 homekit:
   fan:
