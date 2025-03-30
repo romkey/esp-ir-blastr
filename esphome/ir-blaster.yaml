@@ -35,12 +35,12 @@ packages:
 remote_receiver:
   pin: GPIO9
   dump: pronto
-  rmt_channel: 4
+#  rmt_channel: 4
 #  invert: True
 
 remote_transmitter:
   pin: GPIO7
-  rmt_channel: 1
+#  rmt_channel: 1
   # Infrared remotes use a 50% carrier signal
   carrier_duty_percent: 50%
 
